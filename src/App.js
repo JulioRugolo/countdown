@@ -1,8 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
 import Countdown from 'react-countdown';
 import { Component } from 'react';
 import Header from './components/Header';
+import Swal from 'sweetalert2'
 
 class App  extends Component{
   constructor() {
@@ -43,24 +43,18 @@ class App  extends Component{
     this.setState({ timerValue: timeInSeconds, start: true, displayInput: false})
   }
 
-  handleCancel = (event) => {
-    event.preventDefault()
-    this.setState({ 
-      timerValue: 0,
-      start: false,
-      displayInput: true,
-      minutes: '',
-      seconds: '',
-      buttonDisable: true
-    })
-  }
-
   render(){
     const {minutes, seconds, timerValue, start, displayInput, buttonDisable} = this.state
     const renderer = ({ minutes, seconds, completed }) => {
       if (completed) {
         // Render a completed state
-        return
+        this.setState({displayInput: true})
+        Swal.fire({
+          title: 'Timer finalizado',
+          icon: 'success',
+          confirmButtonText: 'Reiniciar!'
+        })
+        return 
       } else {
         // Render a countdown
         return <span className='counter'>{minutes > 9 ? minutes : `0${minutes}`}:{seconds > 9 ? seconds : `0${seconds}`}</span>;
@@ -73,13 +67,19 @@ class App  extends Component{
           displayInput ?
           (<div className='inputCard'>
           <h1>Bora pro intervalo?</h1>
-            <p><input type="text" placeholder='Digite os minutos!' value={minutes} onChange={this.handleChange} name="minutes"/></p>
-            <p><input type="text" placeholder='Digite os segundos!' value={seconds} onChange={this.handleChange} name="seconds"/></p>
+            <div className='inputs'>
+              <p><input type="text" placeholder='Minutos' value={minutes} onChange={this.handleChange} name="minutes"/></p>
+              <p><input type="text" placeholder='Segundos' value={seconds} onChange={this.handleChange} name="seconds"/></p>
+            </div>
             <button type='submit' onClick={(this.handleStart)} disabled={buttonDisable}>Start</button>
             </div>
         ) :
         <div className='timerRunning'>
-          <Countdown date={Date.now() + timerValue} autoStart={start} renderer={renderer}/>
+          <Countdown date={Date.now() + timerValue} autoStart={start} controlled={false} onPause={() => false} renderer={renderer}/>
+          <audio data-testid="audio-component" src="./audio/hadouken.mp3" controls>
+            <track kind="captions" />
+            O seu navegador não suporta o elemento{" "} <code>audio</code>
+          </audio>
           <button type='submit' onClick={(this.handleCancel)}>Cancelar</button>
         </div>
         }

@@ -39,12 +39,19 @@ button:hover {
   color: white;
 }
 
+.inputs {
+  display: flex;
+  gap: 5px;
+}
+
 input {
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 300px;
+  width: 100px;
+  height: 30px;
+  border-radius: 20px;
 }
 
 .counter {
@@ -63,7 +70,7 @@ input {
 
 @media only screen and (max-width: 390px) {
   .inputCard, .timerRunning {
-    height: 60vh;
+    height: 30vh;
     width: 60%;
   }
 }
