@@ -18,16 +18,18 @@ class App  extends Component{
   }
 
   handleChange = ({target}) => {
-    if (target.name === 'minutes') {
+    if (target.name === 'minutes' && target.value < 60 && target.value >= 0) {
       this.setState({
         [target.name]: Number(target.value),
         buttonDisable: false
       })
-    } else {
+    } else if (target.name === 'seconds' && target.value < 60 && target.value >= 0) {
       this.setState({
         [target.name]: Number(target.value),
         buttonDisable: false
       }) 
+    } else {
+      alert('Valores inválidos')
     }
     const {minutes, seconds } = this.state
     if (minutes.length > 0 || seconds.length > 0) {
