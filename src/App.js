@@ -13,7 +13,8 @@ class App  extends Component{
       timerValue: 0,
       start: false,
       displayInput: true,
-      buttonDisable: true
+      buttonDisable: true,
+      finished: false
     };
   }
 
@@ -29,7 +30,12 @@ class App  extends Component{
         buttonDisable: false
       }) 
     } else {
-      alert('Valores inválidos')
+      Swal.fire({
+        title: 'Campos inválidos',
+        icon: 'error',
+        confirmButtonText: 'Tentar novamente!'
+      })
+      this.setState({minutes: "", seconds: ""})
     }
     const {minutes, seconds } = this.state
     if (minutes.length > 0 || seconds.length > 0) {
@@ -43,12 +49,18 @@ class App  extends Component{
     this.setState({ timerValue: timeInSeconds, start: true, displayInput: false})
   }
 
+  handleCancel = (event) => {
+    event.preventDefault()
+    this.setState({displayInput: true, minutes: '', seconds: ""})
+  }
+
   render(){
-    const {minutes, seconds, timerValue, start, displayInput, buttonDisable} = this.state
+    const audioUrl = 'https://github.com/JulioRugolo/countdown/raw/962a38043c4d652f78a04a4ebc57906347842e60/src/audio/hadouken.mp3'
+    const {minutes, seconds, timerValue, start, displayInput, buttonDisable, finished} = this.state
     const renderer = ({ minutes, seconds, completed }) => {
       if (completed) {
         // Render a completed state
-        this.setState({displayInput: true})
+        this.setState({displayInput: true, finished: true, minutes: '', seconds: ''})
         Swal.fire({
           title: 'Timer finalizado',
           icon: 'success',
@@ -57,7 +69,7 @@ class App  extends Component{
         return 
       } else {
         // Render a countdown
-        return <span className='counter'>{minutes > 9 ? minutes : `0${minutes}`}:{seconds > 9 ? seconds : `0${seconds}`}</span>;
+        return <span className='counter'>{minutes > 9 ? minutes : `0${minutes}`}:{seconds > 9 ? seconds : `0${seconds}`}</span>
       }
     };
     return (
@@ -71,19 +83,22 @@ class App  extends Component{
               <p><input type="text" placeholder='Minutos' value={minutes} onChange={this.handleChange} name="minutes"/></p>
               <p><input type="text" placeholder='Segundos' value={seconds} onChange={this.handleChange} name="seconds"/></p>
             </div>
+            <audio data-testid="audio-component" src={audioUrl} autoPlay={finished}>
+              <track kind="captions" />
+              O seu navegador não suporta o elemento{" "} <code>audio</code>
+            </audio>
             <button type='submit' onClick={(this.handleStart)} disabled={buttonDisable}>Start</button>
             </div>
         ) :
         <div className='timerRunning'>
           <Countdown date={Date.now() + timerValue} autoStart={start} controlled={false} onPause={() => false} renderer={renderer}/>
-          <audio data-testid="audio-component" src="./audio/hadouken.mp3" controls>
-            <track kind="captions" />
-            O seu navegador não suporta o elemento{" "} <code>audio</code>
-          </audio>
           <button type='submit' onClick={(this.handleCancel)}>Cancelar</button>
         </div>
         }
-
+      <footer>
+        <p>Julio Rugolo</p>
+        <a href="http://www.github.com/juliorugolo"  target="_blank" rel="noreferrer">GitHub</a>
+      </footer>
         
       </section>
     );
