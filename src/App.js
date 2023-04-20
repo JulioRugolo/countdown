@@ -51,7 +51,7 @@ class App  extends Component{
 
   handleCancel = (event) => {
     event.preventDefault()
-    this.setState({displayInput: true, minutes: '', seconds: ""})
+    this.setState({displayInput: true, minutes: '', seconds: "", finished:false})
   }
 
   render(){
